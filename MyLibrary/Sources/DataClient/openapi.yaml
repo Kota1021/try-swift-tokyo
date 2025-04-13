@@ -1,0 +1,264 @@
+openapi: 3.1.0
+info:
+  title: Conference API
+  version: "1.0.0"
+  description: カンファレンスの日程情報を返すAPI
+servers:
+  - url: https://example.com
+    description: 本番環境のAPIサーバー
+paths:
+  /conference:
+    get:
+      summary: カンファレンスの詳細情報を取得する
+      parameters:
+        - in: query
+          name: title
+          required: true
+          description: カンファレンスのタイトル
+          schema:
+            type: string
+            example: "2025-day1"
+      responses:
+        "200":
+          description: 正常にカンファレンス情報を返却
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conference"
+              example:
+                id: 1
+                title: "Day 1"
+                date: "2025-04-09T12:00:00+09:00"
+                schedules:
+                  - id: 1
+                    time: "2025-04-09T12:00:00+09:00"
+                    sessions:
+                      - title: "Drive Through File Provider"
+                        speakers:
+                          - name: "Audrey Zebaze"
+                            image_name: "Audrey"
+                            bio: "Audrey discovered iOS when she first bought an iPhone Edge in 2008. Since then, she is working passionately on Apple platforms, enjoying SwiftUI and even CoreData while building the macOS Proton Drive app. When she is not coding, watching/playing basketball and football are her favorite activities.\nAs a huge movie addict, Audrey is avoiding trailers as much as possible."
+                            links:
+                              - name: "@Mvpohhhdrey"
+                                url: "https://twitter.com/Mvpohhhdrey"
+                        place: "Hall"
+                        description: "As most people tend to use cloud sync services to store relevant content, we will explore File Provider framework on both iOS and macOS and all the related features: Finder and Files app integration, remote synchronisation with upload and downloads. So let's explore how it works on both iOS and macOS and how you can sync, upload and download files on these platforms."
+                      - title: "Office hour"
+                        speakers:
+                          - name: "Marcin Krzyżanowski"
+                            image_name: "Marcin Kryzyzanowski"
+                        place: "Ask the Speaker"
+                        summary: "Meet Marcin and ask questions about the talk. This is a great opportunity to get more insights and learn more about the topic."
+  /sponsors:
+    get:
+      summary: スポンサー情報を取得する
+      responses:
+        "200":
+          description: スポンサーランクに基づいて分別されたスポンサー情報を返す
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SponsorGroup"
+  /speakers:
+    get:
+      summary: スピーカー情報を取得する
+      responses:
+        "200":
+          description: 全スピーカーの情報を返す
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Speaker"
+  /organizers:
+    get:
+      summary: オーガナイザー情報を取得する
+      responses:
+        "200":
+          description: 全オーガナイザーの情報を返す
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Organizer"
+components:
+  schemas:
+    Conference:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Day 1"
+        date:
+          type: string
+          format: date-time
+          example: "2025-04-09T12:00:00+09:00"
+        schedules:
+          type: array
+          items:
+            $ref: "#/components/schemas/Schedule"
+      required:
+        - id
+        - title
+        - date
+        - schedules
+    Schedule:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        time:
+          type: string
+          format: date-time
+          example: "2025-04-09T12:00:00+09:00"
+        sessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Session"
+      required:
+        - id
+        - time
+        - sessions
+    Session:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Drive Through File Provider"
+        summary:
+          type: [string, "null"]
+          example: "Brief summary of the session (省略可能）"
+        speakers:
+          type: array
+          description: "Speaker情報の配列"
+          items:
+            $ref: "#/components/schemas/Speaker"
+        place:
+          type: [string, "null"]
+          example: "Hall"
+        description:
+          type: [string, "null"]
+          example: "議題の詳細な説明"
+        requirements:
+          type: [string, "null"]
+          example: "必要な持参物等（省略可能）"
+      required:
+        - title
+    Speaker:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Konrad 'ktoso' Malawski"
+        image_name:
+          type: string
+          example: "konrad_ktoso_malawski"
+        bio:
+          type: [string, "null"]
+          example: "Konrad works in the Swift language team at Apple..."
+        job_title:
+          type: [string, "null"]
+          example: "Swift Language Team"
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/Link"
+      required:
+        - name
+        - image_name
+    Link:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "@Mvpohhhdrey"
+        url:
+          type: string
+          format: uri
+          example: "https://twitter.com/Mvpohhhdrey"
+      required:
+        - name
+        - url
+    Sponsor:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "RevenueCat"
+        image_name:
+          type: string
+          example: "PLATINUM_RevenueCat"
+        link:
+          type: string
+          format: uri
+          example: "http://rev.cat/"
+        japanese_link:
+          type: [string, "null"]
+          format: uri
+          example: "https://www.unext.co.jp/"
+      required:
+        - id
+        - name
+        - image_name
+        - link
+    SponsorPlan:
+      type: string
+      enum:
+        - platinum
+        - gold
+        - silver
+        - bronze
+        - diversity
+        - student
+        - community
+        - individual
+      description: スポンサーのランクを表す列挙型
+    SponsorGroup:
+      type: object
+      properties:
+        rank:
+          $ref: "#/components/schemas/SponsorPlan"
+          description: スポンサーのランク
+        sponsors:
+          type: array
+          items:
+            $ref: "#/components/schemas/Sponsor"
+          description: 該当ランクのスポンサー一覧
+      required:
+        - rank
+        - sponsors
+    Organizer:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Daiki Matsudate"
+        image_name:
+          type: string
+          example: "Daiki"
+        bio:
+          type: [string, "null"]
+          example: "Daiki has worked as an iOS Developer for over 10 years..."
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/Link"
+      required:
+        - id
+        - name
+        - image_name
+        - bio

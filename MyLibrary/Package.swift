@@ -30,6 +30,9 @@ let package = Package(
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.18.0"),
     .package(url: "https://github.com/maiyama18/LicensesPlugin", from: "0.2.0"),
     .package(url: "https://github.com/flitto/rtt_sdk", branch: "0.1.5"),
+    .package(url: "https://github.com/apple/swift-openapi-generator", from: "1.7.2"),
+    .package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.5.0"),
+    .package(url: "https://github.com/apple/swift-openapi-urlsession", from: "1.1.0"),
   ],
   targets: [
     .target(
@@ -40,6 +43,7 @@ let package = Package(
         "ScheduleFeature",
         "SponsorFeature",
         "trySwiftFeature",
+        "DataClient",
       ]
     ),
     .target(
@@ -47,9 +51,14 @@ let package = Package(
       dependencies: [
         "SharedModels",
         .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+        .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+        .product(name: "OpenAPIURLSession", package: "swift-openapi-urlsession"),
       ],
       resources: [
         .process("Resources")
+      ],
+      plugins: [
+        .plugin(name: "OpenAPIGenerator", package: "swift-openapi-generator"),
       ]
     ),
     .target(
