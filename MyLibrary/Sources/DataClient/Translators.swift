@@ -62,18 +62,6 @@ extension Components.Schemas.Organizer {
     }
 }
 
-extension [Components.Schemas.SponsorGroup] {
-    func translate() -> SponsorGroups {
-        self.map { $0.translate() }
-    }
-}
-
-extension Components.Schemas.SponsorGroup {
-    func translate() -> SponsorGroupByPlan {
-        .init(rank: rank.translate(), sponsors: sponsors.map { $0.translate() })
-    }
-}
-
 extension Components.Schemas.Sponsor {
     func translate() -> Sponsor {
         .init(
@@ -85,18 +73,18 @@ extension Components.Schemas.Sponsor {
     }
 }
 
-extension Components.Schemas.SponsorPlan {
-    func translate() -> Plan {
-        switch self {
-        case .platinum: .platinum
-        case .gold: .gold
-        case .silver: .silver
-        case .bronze: .bronze
-        case .diversity: .diversity
-        case .student: .student
-        case .community: .community
-        case .individual: .individual
-        }
+extension Components.Schemas.Sponsors {
+    func translate() -> Sponsors {
+        .init(
+            platinum: platinum?.map { $0.translate() } ?? [],
+            gold: gold?.map { $0.translate() } ?? [],
+            silver: silver?.map { $0.translate() } ?? [],
+            bronze: bronze?.map { $0.translate() } ?? [],
+            diversity: diversity?.map { $0.translate() } ?? [],
+            student: student?.map { $0.translate() } ?? [],
+            community: community?.map { $0.translate() } ?? [],
+            individual: individual?.map { $0.translate() } ?? []
+        )
     }
 }
 

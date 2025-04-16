@@ -60,10 +60,10 @@ struct MockClient: APIProtocol {
         let data = loadDataFromBundle(fileName: "sponsors")
         print("gonna decode!")
         do {
-            let sponsors = try jsonDecoder.decode(SponsorGroups.self, from: data)
+            let sponsors = try jsonDecoder.decode(Sponsors.self, from: data)
         try await Task.sleep(for: .seconds(1))
         print(sponsors)
-        return .ok(.init(body: .json(sponsors.translate())))
+            return .ok(.init(body: .json(sponsors.translate())))
 
         } catch {
             print(error)
@@ -147,32 +147,18 @@ extension Sponsor {
     }
 }
 
-extension Plan {
-    func translate() -> Components.Schemas.SponsorPlan {
-        switch self {
-        case .platinum: .platinum
-        case .gold: .gold
-        case .silver: .silver
-        case .bronze: .bronze
-        case .diversity: .diversity
-        case .student: .student
-        case .community: .community
-        case .individual: .individual
-        }
-    }
-}
-
-extension SponsorGroups {
-    func translate() -> [Components.Schemas.SponsorGroup] {
-        var result: [Components.Schemas.SponsorGroup] = Components.Schemas.SponsorPlan.allCases.map { .init(rank: $0, sponsors: []) }
-        self.forEach { sponsorGroupByPlan in
-            for i in result.indices {
-                if result[i].rank == sponsorGroupByPlan.rank.translate() {
-                    result[i].sponsors += sponsorGroupByPlan.sponsors.map { $0.translate() }
-                }
-            }
-        }
-        return result
+extension Sponsors {
+    func translate() -> Components.Schemas.Sponsors {
+        .init(
+            platinum: platinum.map { $0.translate() },
+            gold: gold.map { $0.translate() },
+            silver: silver.map { $0.translate() },
+            bronze: bronze.map { $0.translate() },
+            diversity: diversity.map { $0.translate() },
+            student: student.map { $0.translate() },
+            community: community.map { $0.translate() },
+            individual: individual.map { $0.translate() }
+        )
     }
 }
 

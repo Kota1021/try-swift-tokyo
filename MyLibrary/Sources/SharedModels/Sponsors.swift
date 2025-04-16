@@ -12,14 +12,14 @@ public enum Plan: String, Codable, Sendable, CaseIterable {
 }
 
 public struct Sponsors: Codable, Equatable, Hashable, Sendable {
-  let platinum: [Sponsor]
-  let gold: [Sponsor]
-  let silver: [Sponsor]
-  let bronze: [Sponsor]
-  let diversity: [Sponsor]
-  let student: [Sponsor]
-  let community: [Sponsor]
-  let individual: [Sponsor]
+    public let platinum: [Sponsor]
+    public let gold: [Sponsor]
+    public let silver: [Sponsor]
+    public let bronze: [Sponsor]
+    public let diversity: [Sponsor]
+    public let student: [Sponsor]
+    public let community: [Sponsor]
+    public let individual: [Sponsor]
 
   public var allPlans: [Plan: [Sponsor]] {
     return [

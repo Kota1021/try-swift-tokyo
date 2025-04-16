@@ -11,7 +11,7 @@ public struct DataClient {
   public var fetchDay1: @Sendable () async throws -> Conference
   public var fetchDay2: @Sendable () async throws -> Conference
   public var fetchDay3: @Sendable () async throws -> Conference
-  public var fetchSponsors: @Sendable () async throws -> SponsorGroups
+  public var fetchSponsors: @Sendable () async throws -> Sponsors
   public var fetchOrganizers: @Sendable () async throws -> [Organizer]
   public var fetchSpeakers: @Sendable () async throws -> [Speaker]
 }

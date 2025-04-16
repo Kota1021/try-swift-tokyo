@@ -58,9 +58,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/SponsorGroup"
+                $ref: "#/components/schemas/Sponsors"
   /speakers:
     get:
       summary: スピーカー情報を取得する
@@ -212,32 +210,41 @@ components:
         - name
         - image_name
         - link
-    SponsorPlan:
-      type: string
-      enum:
-        - platinum
-        - gold
-        - silver
-        - bronze
-        - diversity
-        - student
-        - community
-        - individual
-      description: スポンサーのランクを表す列挙型
-    SponsorGroup:
+    Sponsors:
       type: object
       properties:
-        rank:
-          $ref: "#/components/schemas/SponsorPlan"
-          description: スポンサーのランク
-        sponsors:
+        platinum:
           type: array
           items:
             $ref: "#/components/schemas/Sponsor"
-          description: 該当ランクのスポンサー一覧
-      required:
-        - rank
-        - sponsors
+        gold:
+          type: array
+          items:
+            $ref: "#/components/schemas/Sponsor"
+        silver:
+          type: array
+          items:
+            $ref: "#/components/schemas/Sponsor"
+        bronze:
+          type: array
+          items:
+            $ref: "#/components/schemas/Sponsor"
+        diversity:
+          type: array
+          items:
+            $ref: "#/components/schemas/Sponsor"
+        student:
+          type: array
+          items:
+            $ref: "#/components/schemas/Sponsor"
+        community:
+          type: array
+          items:
+            $ref: "#/components/schemas/Sponsor"
+        individual:
+          type: array
+          items:
+            $ref: "#/components/schemas/Sponsor"
     Organizer:
       type: object
       properties:
