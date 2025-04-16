@@ -15,7 +15,8 @@ final class SponsorsTests: XCTestCase {
       $0[DataClient.self].fetchSponsors = { @Sendable in .mock }
     }
 
-    await store.send(\.view.onAppear) {
+    await store.send(\.view.onAppear)
+    await store.receive(\.fetchResponse) {
       $0.sponsors = .mock
     }
   }
