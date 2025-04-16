@@ -1,4 +1,5 @@
 import AppFeature
+import DataClient
 import SwiftUI
 
 @main
@@ -8,6 +9,8 @@ struct ConferenceApp: App {
       AppView(
         store: .init(initialState: .init()) {
           AppReducer()
+        } withDependencies: {
+            $0.dataClient = .testValue
         })
     }
   }
