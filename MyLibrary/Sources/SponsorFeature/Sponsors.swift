@@ -22,6 +22,7 @@ public struct SponsorsList {
     case destination(PresentationAction<Destination.Action>)
     case binding(BindingAction<State>)
     case view(View)
+    case fetchResponse(Result<Sponsors, Error>)
 
     @CasePathable
     public enum View {
@@ -40,15 +41,27 @@ public struct SponsorsList {
     Reduce { state, action in
       switch action {
       case .view(.onAppear):
-        state.sponsors = try! dataClient.fetchSponsors()
-        return .none
-
+        return .run { send in
+            do {
+                let sponsors = try await dataClient.fetchSponsors()
+                await send(.fetchResponse(.success(sponsors)))
+            } catch {
+                await send(.fetchResponse(.failure(error)))
+            }
+        }
       case let .view(.sponsorTapped(sponsor)):
         guard let url = sponsor.link else { return .none }
         return .run { _ in await safari(url) }
       case .binding:
         return .none
       case .destination:
+        return .none
+      case let .fetchResponse(.success(sponsors)):
+        state.sponsors = sponsors
+        return .none
+      case .fetchResponse(.failure):
+        // TODO: エラー処理
+        // state.sponsors = nil
         return .none
       }
     }

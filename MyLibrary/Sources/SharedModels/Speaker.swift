@@ -17,7 +17,7 @@ public struct Speaker: Codable, Equatable, Hashable, Sendable {
     }
   }
 
-  public init(name: String, imageName: String, bio: String, links: [Link]) {
+  public init(name: String, imageName: String, bio: String?, links: [Link]?) {
     self.name = name
     self.imageName = imageName
     self.bio = bio

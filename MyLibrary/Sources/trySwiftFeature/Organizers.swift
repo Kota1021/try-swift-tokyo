@@ -23,6 +23,7 @@ public struct Organizers {
     case view(View)
     case destination(PresentationAction<Destination.Action>)
     case delegate(Delegate)
+    case fetchResponse(Result<IdentifiedArrayOf<Organizer>, Error>)
 
     public enum View {
       case onAppear
@@ -46,14 +47,21 @@ public struct Organizers {
     Reduce { state, action in
       switch action {
       case .view(.onAppear):
-        let response = try! dataClient.fetchOrganizers()
-        state.organizers.append(contentsOf: response)
-        return .none
+        return .run { send in
+            let response = try! await dataClient.fetchOrganizers()
+            await send(.fetchResponse(.success(.init(uniqueElements: response))))
+        }
       case let .view(._organizerTapped(organizer)):
         return .send(.delegate(.organizerTapped(organizer)))
       case .delegate:
         return .none
       case .destination:
+        return .none
+      case .fetchResponse(.success(let organizers)):
+        state.organizers.append(contentsOf: organizers)
+        return .none
+      case .fetchResponse(.failure):
+        // TODO: error handling
         return .none
       }
     }

@@ -66,14 +66,14 @@ public struct Schedule {
     Reduce { state, action in
       switch action {
       case .view(.onAppear):
-        return .send(
-          .fetchResponse(
-            Result {
-              let day1 = try dataClient.fetchDay1()
-              let day2 = try dataClient.fetchDay2()
-              let day3 = try dataClient.fetchDay3()
-              return .init(day1: day1, day2: day2, day3: day3)
-            }))
+          return .run { send in
+              await send(.fetchResponse(Result {
+                  let day1 = try await dataClient.fetchDay1()
+                  let day2 = try await dataClient.fetchDay2()
+                  let day3 = try await dataClient.fetchDay3()
+                  return .init(day1: day1, day2: day2, day3: day3)
+              }))
+          }
       case let .view(.disclosureTapped(session)):
         guard let description = session.description, let speakers = session.speakers else {
           return .none
@@ -326,5 +326,8 @@ public struct ScheduleView: View {
       initialState: .init(),
       reducer: {
         Schedule()
+      },
+      withDependencies: {
+          $0.dataClient = DataClient.testValue
       }))
 }
