@@ -58,17 +58,9 @@ struct MockClient: APIProtocol {
 
     func get_sol_sponsors(_ input: Operations.get_sol_sponsors.Input) async throws -> Operations.get_sol_sponsors.Output {
         let data = loadDataFromBundle(fileName: "sponsors")
-        print("gonna decode!")
-        do {
-            let sponsors = try jsonDecoder.decode(Sponsors.self, from: data)
+        let sponsors = try jsonDecoder.decode(Sponsors.self, from: data)
         try await Task.sleep(for: .seconds(1))
-        print(sponsors)
-            return .ok(.init(body: .json(sponsors.translate())))
-
-        } catch {
-            print(error)
-            throw error
-        }
+        return .ok(.init(body: .json(sponsors.translate())))
     }
 
     func get_sol_conference(_ input: Operations.get_sol_conference.Input) async throws -> Operations.get_sol_conference.Output {
